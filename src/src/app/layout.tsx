@@ -15,7 +15,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className="p-10 xl:px-24">
+      <body className="p-10 xl:px-24 dark:bg-black">
         <Header />
       {children}
       </body>
