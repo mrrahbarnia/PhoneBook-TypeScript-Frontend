@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Header } from "@/components/Header";
+import { Provider } from "jotai";
 import "./globals.css";
 
 
@@ -15,9 +16,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className="p-10 xl:px-24 dark:bg-black">
-        <Header />
-      {children}
+      <body className="p-10 xl:px-24 dark:bg-black animate-fadeIn">
+        <Provider>
+          <Header />
+          {children}
+      </Provider>
       </body>
     </html>
   );

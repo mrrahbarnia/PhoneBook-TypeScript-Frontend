@@ -13,7 +13,7 @@ export const DarkMode = () => {
         document.documentElement.classList.toggle("dark")
     }
     return <Fragment>
-        {darkMode === "light" ? <BsFillMoonStarsFill onClick={darkModeHandler} size={20} className="text-purple-700 cursor-pointer"/> : <MdLightMode onClick={darkModeHandler} size={20} className="text-white cursor-pointer"/>}
+        {darkMode === "light" ? <BsFillMoonStarsFill onClick={darkModeHandler} size={20} className="text-black cursor-pointer"/> : <MdLightMode onClick={darkModeHandler} size={20} className="text-white cursor-pointer"/>}
     </Fragment>
     
 }

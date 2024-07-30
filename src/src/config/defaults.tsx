@@ -1,0 +1,1 @@
+export const EXTERNAL_API_URL=process.env.EXTERNAL_API_URL

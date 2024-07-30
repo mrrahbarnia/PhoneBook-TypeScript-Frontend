@@ -6,4 +6,7 @@
     .flex-center {
         @apply flex justify-center items-center
     }
+    .gradient {
+        @apply bg-gradient-to-br from-fuchsia-700 via-indigo-800 to-gray-900 dark:from-gray-200 dark:to-gray-500 
+    }
 }
