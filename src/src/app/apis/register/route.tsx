@@ -2,11 +2,12 @@
 
 import { NextRequest, NextResponse } from "next/server"
 import { EXTERNAL_API_URL } from "@/config/defaults";
+import { RegisterOut } from "@/types/apis/Register";
 
 const EXTERNAL_REGISTER_API = `${EXTERNAL_API_URL}/auth/register/`
 
 export async function POST(request: NextRequest) {
-    const data = await request.json();
+    const data: RegisterOut = await request.json();
     
 
     const response = await fetch(EXTERNAL_REGISTER_API, {
@@ -21,11 +22,10 @@ export async function POST(request: NextRequest) {
         })
     })
     const jsonResponse = await response.json();
-    console.log(jsonResponse);
     
-    
-    if (jsonResponse?.detail === "Email already exists") {
+    if (response.ok) {
+        return NextResponse.json({"registered": true}, {status: 201})
+    } else {
         return NextResponse.json({...jsonResponse}, {status: 400})
     }
-    return NextResponse.json({"registered": true}, {status: 201})
 }

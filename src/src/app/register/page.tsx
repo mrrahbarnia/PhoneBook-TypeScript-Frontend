@@ -5,6 +5,7 @@ import React, { useState } from "react";
 import { Input } from "@/components/UI/Input";
 import { useSetAtom } from "jotai";
 import { verificationMessage } from "@/contexts/messages";
+import Link from "next/link";
 
 const INTERNAL_REGISTER_API: string = "/apis/register"
 
@@ -48,10 +49,12 @@ export default function Page() {
         if (responseJson?.detail && responseJson.detail === 'Email already exists') {
             errorHandler(responseJson.detail);
             setIsLoading(false);
+            return;
         }
         if (responseJson?.detail && responseJson.detail[0].msg?.includes('Has minimum 8 characters in length')) {
             errorHandler("Password must at least 8 characters including at least one lower case,upper case,number and special character(@,$,#,...)")
             setIsLoading(false);
+            return;
         }
         if (response.ok) {
             setVerificationMessage(() => "Enter the verification code from your email.")
@@ -59,9 +62,6 @@ export default function Page() {
         }
     }
 
-    const LoginNavigateHandler = () => {
-        router.replace("/login")
-    }
 
     return (<div className="gradient shadow-slate-900 mt-6 md:w-7/12 md:mx-auto md:mt-12 shadow-2xl bg-slate-500 rounded-lg">
         <form onSubmit={formSubmitHandler} className="flex flex-col py-6 px-10 space-y-2">
@@ -77,7 +77,9 @@ export default function Page() {
             </div>
             {formError && <p className="bg-red-700 text-white text-center rounded-lg py-1">{formError}</p>}
             <button className="hover:text-violet-300 font-bold text-white transition active:scale-75 dark:text-black dark:hover:text-purple-700" disabled={isLoading} type="submit">{isLoading ? "Please wait" : "Register"}</button>
-            <button onClick={LoginNavigateHandler} className="hover:text-violet-300 font-bold text-white transition active:scale-75 dark:text-black dark:hover:text-purple-700" type="button">Login</button>
+
+            <p className="dark:text-black text-center text-white">have an account?</p>
+            <Link href="/login" className="text-center hover:text-violet-300 font-bold text-white transition active:scale-75 dark:text-black dark:hover:text-purple-700 underline underline-offset-1" type="button">Login</Link>
         </form>
     </div>)
 }

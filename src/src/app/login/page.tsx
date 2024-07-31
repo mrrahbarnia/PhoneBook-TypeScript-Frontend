@@ -3,14 +3,18 @@
 import { useRouter } from "next/navigation";
 import React, { useState, useEffect, Fragment } from "react";
 import { Input } from "@/components/UI/Input";
-import { useAtomValue } from "jotai";
-import { loginMessage } from "@/contexts/messages";
+import { useAtomValue, useSetAtom } from "jotai";
+import { loginMessage, homePageMessage } from "@/contexts/messages";
+import Link from "next/link";
+
+const INTERNAL_LOGIN_API: string = "/apis/login"
 
 export default function Page() {
     const [isLoading, setIsLoading] = useState(false);
     const [formError, setFormError] = useState("");
-    const router = useRouter();
     const message = useAtomValue(loginMessage);
+    const setMessage = useSetAtom(homePageMessage);
+    const router = useRouter();
     const [contextMessage, setContextMessage] = useState("");
 
     useEffect(() => {
@@ -33,13 +37,35 @@ export default function Page() {
         }, 6000)
     }
 
-    const formSubmitHandler = (event: React.FormEvent<HTMLFormElement>) => {
+    const formSubmitHandler = async(event: React.FormEvent<HTMLFormElement>) => {
         setIsLoading(true);
+        const eventForm = event.target as HTMLFormElement;
         event.preventDefault();
-    }
-
-    const registerNavigateHandler = () => {
-        router.replace("/register")
+        if (eventForm.email.value === "" || eventForm.password.value === "") {
+            errorHandler("Could not leave fields empty!")
+        }
+        const response = await fetch(INTERNAL_LOGIN_API, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                "email": eventForm.email.value,
+                "password": eventForm.password.value,
+            })
+        })
+        const responseJson = await response.json()
+        console.log(responseJson);
+        if (responseJson?.detail && responseJson.detail === "There is no active account with the provided info") {
+            errorHandler(responseJson.detail);
+            setIsLoading(false);
+            return;
+        }
+        if (response.ok) {
+            setMessage(() => `Welcome ${eventForm.email.value}`);
+            router.replace("/");
+            return;
+        }
     }
 
     return (
@@ -58,9 +84,10 @@ export default function Page() {
                 </div>
                 {formError && <p className="bg-red-700 text-white text-center rounded-lg py-1">{formError}</p>}
                 <button className="hover:text-violet-300 font-bold text-white transition active:scale-75 dark:text-black dark:hover:text-purple-700" disabled={isLoading} type="submit">{isLoading ? "Please wait" : "Login"}</button>
-                <button onClick={registerNavigateHandler} className="hover:text-violet-300 font-bold text-white transition active:scale-75 dark:text-black dark:hover:text-purple-700" type="button">Register</button>
+                <p className="dark:text-black text-center text-white">Dont have an account?</p>
+                <Link href="/register" className="text-center hover:text-violet-300 font-bold text-white transition active:scale-75 dark:text-black dark:hover:text-purple-700 underline underline-offset-1" type="button">Register</Link>
             </form>
         </div>
     </Fragment>
     )
-}
+}   
