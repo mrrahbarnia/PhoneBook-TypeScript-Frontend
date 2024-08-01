@@ -3,8 +3,9 @@
 import { useRouter } from "next/navigation";
 import React, { useState, useEffect, Fragment } from "react";
 import { Input } from "@/components/UI/Input";
-import { useAtomValue, useSetAtom } from "jotai";
-import { loginMessage, homePageMessage } from "@/contexts/messages";
+import { useSetAtom, useAtom } from "jotai";
+import { loginMessage, homePageMessage } from "@/contexts/messageContext";
+import { isAuthenticated, authenticatedEmail, setIsAuthenticatedToLocal } from "@/contexts/authContext";
 import Link from "next/link";
 
 const INTERNAL_LOGIN_API: string = "/apis/login"
@@ -12,8 +13,10 @@ const INTERNAL_LOGIN_API: string = "/apis/login"
 export default function Page() {
     const [isLoading, setIsLoading] = useState(false);
     const [formError, setFormError] = useState("");
-    const message = useAtomValue(loginMessage);
-    const setMessage = useSetAtom(homePageMessage);
+    const [message, setMessage] = useAtom(loginMessage);
+    const setHomeMessage = useSetAtom(homePageMessage);
+    const setIsAuthenticated = useSetAtom(isAuthenticated);
+    const setAuthenticatedEmail = useSetAtom(authenticatedEmail);
     const router = useRouter();
     const [contextMessage, setContextMessage] = useState("");
 
@@ -27,6 +30,7 @@ export default function Page() {
         setContextMessage(message);
         setTimeout(() => {
             setContextMessage("");
+            setMessage(() => "");
         }, 6000)
     }
 
@@ -62,7 +66,10 @@ export default function Page() {
             return;
         }
         if (response.ok) {
-            setMessage(() => `Welcome ${eventForm.email.value}`);
+            setIsAuthenticatedToLocal("1", eventForm.email.value)
+            setHomeMessage(() => `Welcome ${eventForm.email.value}`);
+            setIsAuthenticated(() => true);
+            setAuthenticatedEmail(() => eventForm.email.value);
             router.replace("/");
             return;
         }

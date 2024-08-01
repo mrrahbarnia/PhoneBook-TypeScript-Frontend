@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { Input } from "@/components/UI/Input";
 import { useSetAtom } from "jotai";
-import { verificationMessage } from "@/contexts/messages";
+import { verificationMessage } from "@/contexts/messageContext";
 import Link from "next/link";
 
 const INTERNAL_REGISTER_API: string = "/apis/register"

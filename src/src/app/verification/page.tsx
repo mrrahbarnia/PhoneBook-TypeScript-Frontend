@@ -3,8 +3,8 @@
 import { useRouter } from "next/navigation";
 import React, { useState, useEffect, Fragment } from "react";
 import { Input } from "@/components/UI/Input";
-import { useAtomValue, useSetAtom } from "jotai";
-import { verificationMessage, loginMessage } from "@/contexts/messages";
+import { useAtomValue, useSetAtom, useAtom } from "jotai";
+import { verificationMessage, loginMessage } from "@/contexts/messageContext";
 
 const INTERNAL_VERIFICATION_API: string = "/apis/verification";
 
@@ -13,7 +13,7 @@ export default function Page() {
     const [formError, setFormError] = useState("");
     const [contextMessage, setContextMessage] = useState("");
     const router = useRouter();
-    const message = useAtomValue(verificationMessage);
+    const [message, setMessage] = useAtom(verificationMessage);
     const setLoginMessage = useSetAtom(loginMessage);
 
     useEffect(() => {
@@ -26,6 +26,7 @@ export default function Page() {
         setContextMessage(message);
         setTimeout(() => {
             setContextMessage("");
+            setMessage(() => "")
         }, 6000)
     }
 
